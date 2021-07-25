@@ -340,7 +340,7 @@ class Company(Scraper):
         _output['company_size'] = self.company_size
         _output['founded'] = self.founded
         _output['affiliated_companies'] = self.affiliated_companies
-        _output['employees'] = self.employees
+        #_output['employees'] = self.employees
         
         return json.dumps(_output).replace('\n', '')
 
