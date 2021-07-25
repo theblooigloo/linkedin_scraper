@@ -87,7 +87,8 @@ class Person(Scraper):
             self.scrape_logged_in(close_on_complete=close_on_complete)
         else:
             print("you are not logged in!")
-            x = input("please verify the capcha then press any key to continue...")
+            x = input(
+                "please verify the capcha then press any key to continue...")
             self.scrape_not_logged_in(close_on_complete=close_on_complete)
 
     def _click_see_more_by_class_name(self, class_name):
@@ -113,7 +114,8 @@ class Person(Scraper):
             )
         )
 
-        self.name = root.find_element_by_class_name(selectors.NAME).text.strip()
+        self.name = root.find_element_by_class_name(
+            selectors.NAME).text.strip()
 
         # get about
         try:
@@ -149,7 +151,7 @@ class Person(Scraper):
             "window.scrollTo(0, Math.ceil(document.body.scrollHeight*3/5));"
         )
 
-        ## Click SEE MORE
+        # Click SEE MORE
         self._click_see_more_by_class_name("pv-experience-section__see-more")
 
         try:
@@ -162,10 +164,12 @@ class Person(Scraper):
 
         if exp is not None:
             for position in exp.find_elements_by_class_name("pv-position-entity"):
-                position_title = position.find_element_by_tag_name("h3").text.strip()
+                position_title = position.find_element_by_tag_name(
+                    "h3").text.strip()
 
                 try:
-                    company = position.find_elements_by_tag_name("p")[1].text.strip()
+                    company = position.find_elements_by_tag_name("p")[
+                        1].text.strip()
                     times = str(
                         position.find_elements_by_tag_name("h4")[0]
                         .find_elements_by_tag_name("span")[1]
@@ -185,7 +189,8 @@ class Person(Scraper):
                     )
                 except:
                     company = None
-                    from_date, to_date, duration, location = (None, None, None, None)
+                    from_date, to_date, duration, location = (
+                        None, None, None, None)
 
                 experience = Experience(
                     position_title=position_title,
@@ -198,7 +203,8 @@ class Person(Scraper):
                 self.add_experience(experience)
 
         # get location
-        location = driver.find_element_by_class_name(f"{self.__TOP_CARD}--list-bullet")
+        location = driver.find_element_by_class_name(
+            f"{self.__TOP_CARD}--list-bullet")
         location = location.find_element_by_tag_name("li").text
         self.add_location(location)
 
@@ -207,7 +213,7 @@ class Person(Scraper):
         )
 
         # get education
-        ## Click SEE MORE
+        # Click SEE MORE
         self._click_see_more_by_class_name("pv-education-section__see-more")
         try:
             _ = WebDriverWait(driver, self.__WAIT_FOR_ELEMENT_TIMEOUT).until(
@@ -226,7 +232,8 @@ class Person(Scraper):
 
                 try:
                     degree = (
-                        school.find_element_by_class_name("pv-entity__degree-name")
+                        school.find_element_by_class_name(
+                            "pv-entity__degree-name")
                         .find_elements_by_tag_name("span")[1]
                         .text.strip()
                     )
@@ -235,7 +242,8 @@ class Person(Scraper):
                         .find_elements_by_tag_name("span")[1]
                         .text.strip()
                     )
-                    from_date, to_date = (times.split(" ")[0], times.split(" ")[2])
+                    from_date, to_date = (times.split(
+                        " ")[0], times.split(" ")[2])
                 except:
                     degree = None
                     from_date, to_date = (None, None)
@@ -296,19 +304,25 @@ class Person(Scraper):
 
         # get connections
         try:
-            driver.get("https://www.linkedin.com/mynetwork/invite-connect/connections/")
+            driver.get(
+                "https://www.linkedin.com/mynetwork/invite-connect/connections/")
             _ = WebDriverWait(driver, self.__WAIT_FOR_ELEMENT_TIMEOUT).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "mn-connections"))
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "mn-connections"))
             )
             connections = driver.find_element_by_class_name("mn-connections")
             if connections is not None:
                 for conn in connections.find_elements_by_class_name("mn-connection-card"):
-                    anchor = conn.find_element_by_class_name("mn-connection-card__link")
+                    anchor = conn.find_element_by_class_name(
+                        "mn-connection-card__link")
                     url = anchor.get_attribute("href")
-                    name = conn.find_element_by_class_name("mn-connection-card__details").find_element_by_class_name("mn-connection-card__name").text.strip()
-                    occupation = conn.find_element_by_class_name("mn-connection-card__details").find_element_by_class_name("mn-connection-card__occupation").text.strip()
+                    name = conn.find_element_by_class_name(
+                        "mn-connection-card__details").find_element_by_class_name("mn-connection-card__name").text.strip()
+                    occupation = conn.find_element_by_class_name(
+                        "mn-connection-card__details").find_element_by_class_name("mn-connection-card__occupation").text.strip()
 
-                    contact = Contact(name=name, occupation=occupation, url=url)
+                    contact = Contact(
+                        name=name, occupation=occupation, url=url)
                     self.add_contact(contact)
         except:
             connections = None
@@ -368,7 +382,8 @@ class Person(Scraper):
                         "experience-item__location"
                     ).text.strip()
                 except:
-                    from_date, to_date, duration, location = (None, None, None, None)
+                    from_date, to_date, duration, location = (
+                        None, None, None, None)
 
                 experience = Experience(
                     position_title=position_title,
@@ -402,7 +417,8 @@ class Person(Scraper):
                 ).text.strip()
             except:
                 from_date, to_date = (None, None)
-            education = Education(from_date=from_date, to_date=to_date, degree=degree)
+            education = Education(from_date=from_date,
+                                  to_date=to_date, degree=degree)
 
             education.institution_name = university
             self.add_education(education)

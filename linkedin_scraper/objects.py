@@ -1,5 +1,6 @@
 from . import constants as c
 
+
 class Contact(object):
     name = None
     occupation = None
