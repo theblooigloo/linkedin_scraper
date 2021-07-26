@@ -125,11 +125,6 @@ class Company(Scraper):
             # print(e)
             return None
 
-    def get_headcount(self):
-        driver = self.driver
-        self.headcount = driver.find_element_by_class_name(
-            "employees-on-linkedin-count").text.strip()
-
     def get_employees(self, wait_time=10):
         total = []
         list_css = "list-style-none"
@@ -287,10 +282,6 @@ class Company(Scraper):
                 )
                 self.showcase_pages.append(companySummary)
 
-            # headcount
-            self.headcount = driver.find_element_by_class_name(
-                "employees-on-linkedin-count").text.strip()
-
             # affiliated company
             for affiliated_company in showcase.find_elements_by_class_name("org-company-card"):
                 companySummary = CompanySummary(
@@ -313,6 +304,10 @@ class Company(Scraper):
 
         if close_on_complete:
             driver.close()
+
+        # headcount
+        self.headcount = driver.find_element_by_class_name(
+            "employees-on-linkedin-count").text.strip()
 
     def scrape_not_logged_in(self, close_on_complete=True, retry_limit=10, get_employees=True):
         driver = self.driver
