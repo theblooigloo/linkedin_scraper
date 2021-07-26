@@ -240,7 +240,7 @@ class Company(Scraper):
         num_attributes = min(len(labels), len(values))
         x_off = 0
         for i in range(num_attributes):
-            txt = labels[i].text.strip()
+            txt = labels[i].text.strip()                                  #//*[@id="ember413"]/section/dl/dd[4]
             if txt == 'Website':
                 self.website = values[i+x_off].text.strip()
             elif txt == 'Industry':
@@ -249,6 +249,7 @@ class Company(Scraper):
                 self.company_size = values[i+x_off].text.strip()
                 if len(values) > len(labels):
                     x_off = 1
+            # ADD HEADCOUNT
             elif txt == 'Headquarters':
                 self.headquarters = values[i+x_off].text.strip()
             elif txt == 'Type':
@@ -306,8 +307,7 @@ class Company(Scraper):
             driver.close()
 
         # headcount
-        self.headcount = driver.find_element_by_class_name(
-            "employees-on-linkedin-count").text.strip()
+        self.headcount = driver.find_element_by_xpath("//*[@id="ember413"]/section/dl/dd[4]")#.text.strip()
 
     def scrape_not_logged_in(self, close_on_complete=True, retry_limit=10, get_employees=True):
         driver = self.driver
