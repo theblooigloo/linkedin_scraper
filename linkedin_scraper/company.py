@@ -44,11 +44,12 @@ class Company(Scraper):
     industry = None
     company_type = None
     company_size = None
+    headcount = None
     specialties = None
     showcase_pages = []
     affiliated_companies = []
 
-    def __init__(self, linkedin_url=None, name=None, about_us=None, website=None, headquarters=None, founded=None, industry=None, company_type=None, company_size=None, specialties=None, showcase_pages=[], affiliated_companies=[], driver=None, scrape=True, get_employees=True, close_on_complete=True):
+    def __init__(self, linkedin_url=None, name=None, about_us=None, website=None, headquarters=None, founded=None, industry=None, company_type=None, company_size=None, headcount=None, specialties=None, showcase_pages=[], affiliated_companies=[], driver=None, scrape=True, get_employees=True, close_on_complete=True):
         self.linkedin_url = linkedin_url
         self.name = name
         self.about_us = about_us
@@ -58,6 +59,7 @@ class Company(Scraper):
         self.industry = industry
         self.company_type = company_type
         self.company_size = company_size
+        self.headcount = headcount
         self.specialties = specialties
         self.showcase_pages = showcase_pages
         self.affiliated_companies = affiliated_companies
@@ -122,6 +124,11 @@ class Company(Scraper):
         except Exception as e:
             # print(e)
             return None
+
+    def get_headcount(self):
+        driver = self.driver
+        self.headcount = driver.find_element_by_class_name(
+            "employees-on-linkedin-count").text.strip()
 
     def get_employees(self, wait_time=10):
         total = []
@@ -280,8 +287,11 @@ class Company(Scraper):
                 )
                 self.showcase_pages.append(companySummary)
 
-            # affiliated company
+            # headcount
+            self.headcount = driver.find_element_by_class_name(
+                "employees-on-linkedin-count").text.strip()
 
+            # affiliated company
             for affiliated_company in showcase.find_elements_by_class_name("org-company-card"):
                 companySummary = CompanySummary(
                     linkedin_url=affiliated_company.find_element_by_class_name(
@@ -325,6 +335,8 @@ class Company(Scraper):
             "industry").text.strip()
         self.company_size = driver.find_element_by_class_name(
             "company-size").text.strip()
+        self.headcount = driver.find_element_by_class_name(
+            "employees-on-linkedin-count").text.strip()
         self.company_type = self.__get_text_under_subtitle_by_class(
             driver, "type")
         self.founded = self.__get_text_under_subtitle_by_class(
@@ -388,6 +400,7 @@ class Company(Scraper):
         _output['company_type'] = self.name
         _output['headquarters'] = self.headquarters
         _output['company_size'] = self.company_size
+        _output['headcount'] = self.headcount
         _output['founded'] = self.founded
         _output['affiliated_companies'] = self.affiliated_companies
         #_output['employees'] = self.employees
